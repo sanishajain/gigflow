@@ -10,28 +10,35 @@ export default function PlaceBid() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in to place a bid");
+      navigate("/login");
+      return;
+    }
+
+    const bidData = { amount: Number(amount), message };
+
     try {
-      const res = await fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/${gigId}`, {
+      const res = await fetch(`http://localhost:5000/api/bids/${gigId}`, {
         method: "POST",
-        headers: {
+        headers: { 
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
-        credentials: "include",
         body: JSON.stringify(bidData),
       });
 
-
       const data = await res.json();
 
-      if (!res.ok) {
+      if (res.ok) {
+        alert("Bid placed successfully");
+        navigate(`/gigs/${gigId}`);
+      } else {
         alert(data.message || "Failed to place bid");
-        return;
       }
-
-      alert("Bid placed");
-      navigate(`/gig/${gigId}`);
-    } catch {
+    } catch (err) {
+      console.log(err);
       alert("Server error");
     }
   };

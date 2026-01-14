@@ -7,18 +7,12 @@ export default function GigDetail() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/get", {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then((data) => {
-        const found = data.find((g) => g._id === id);
+    fetch("http://localhost:5000/api/gigs/get")
+      .then(res => res.json())
+      .then(data => {
+        const found = data.find(g => g._id === id);
         setGig(found || null);
-      })
-      .catch(() => setError("Failed to load gig"));
+      });
   }, [id]);
 
   if (error) return <p className="p-6 text-red-500">{error}</p>;
@@ -37,6 +31,7 @@ export default function GigDetail() {
           Assigned to: {gig.assignedTo?.name}
         </p>
       )}
+
 
       {gig.status !== "assigned" ? (
         <Link
