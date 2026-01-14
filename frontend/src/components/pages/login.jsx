@@ -6,32 +6,34 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await fetch("https://gigflow-1-i4rk.onrender.com/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("https://gigflow-1-i4rk.onrender.com/api/auth/login", {
+        method: "POST",
+        credentials: "include",
 
-    const data = await res.json();
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!res.ok) {
-      alert(data.message || "Invalid login");
-      return;
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Invalid login");
+        return;
+      }
+
+      // save token and user
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err);
+      alert("Error logging in");
     }
-
-    // save token and user
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    navigate("/dashboard");
-  } catch (err) {
-    console.log(err);
-    alert("Error logging in");
-  }
-};
+  };
 
 
   return (

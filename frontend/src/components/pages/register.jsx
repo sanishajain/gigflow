@@ -12,6 +12,8 @@ export default function Register() {
         "https://gigflow-1-i4rk.onrender.com/api/auth/register",
         {
           method: "POST",
+          credentials: "include",
+
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         }
