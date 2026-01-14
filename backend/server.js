@@ -2,37 +2,23 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./config/db");
-const protect = require("./middleware/authMiddleware");
+const cookieParser = require("cookie-parser");
 
 connectDB();
 const app = express();
 
-const cookieParser = require("cookie-parser");
 app.use(cookieParser());
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://gigflow-git-main-gig2.vercel.app"
-];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // for ThunderClient / Postman
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://gigflow-git-main-gig2.vercel.app"
+    ],
+    credentials: true
   })
 );
-
-
-// Preflight handler
 
 app.use(express.json());
 
