@@ -8,58 +8,58 @@ export default function CreateGig() {
 
   const navigate = useNavigate();
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!title || !description || !budget) {
-    alert("All fields are required");
-    return;
-  }
+    if (!title || !description || !budget) {
+      alert("All fields are required");
+      return;
+    }
 
-  const gigData = {
-    title,
-    description,
-    price: Number(budget), // ensure number
-  };
+    const gigData = {
+      title,
+      description,
+      price: Number(budget),
+    };
 
-  try {
-    const res = await fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/create", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(gigData),
-    });
-
-    let data;
     try {
-      data = await res.json();
-    } catch {
-      data = { message: "Server returned invalid response" };
-    }
+      const res = await fetch(
+        "https://gigflow-1-i4rk.onrender.com/api/gigs/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",   // ✅ IMPORTANT (cookie auth)
+          body: JSON.stringify(gigData),
+        }
+      );
 
-    if (res.ok) {
-      alert("Gig created");
-      navigate("/dashboard");
-    } else {
-      if (res.status === 401) {
-        alert("Session expired. Please log in again.");
-        navigate("/login");
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Gig created");
+        navigate("/dashboard");
       } else {
-        alert(data.message || "Failed to create gig");
+        if (res.status === 401) {
+          alert("Session expired. Please log in again.");
+          navigate("/login");
+        } else {
+          alert(data.message || "Failed to create gig");
+        }
       }
+    } catch (err) {
+      console.log(err);
+      alert("Server error");
     }
-  } catch (err) {
-    console.log(err);
-    alert("Server error");
-  }
-};
-
+  };
 
   return (
     <div className="flex justify-center items-center h-[80vh]">
-      <form className="bg-white p-6 rounded shadow-md w-96" onSubmit={handleSubmit}>
+      <form
+        className="bg-white p-6 rounded shadow-md w-96"
+        onSubmit={handleSubmit}
+      >
         <h2 className="text-xl font-bold mb-4">Post a Gig</h2>
 
         <input

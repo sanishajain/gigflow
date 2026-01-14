@@ -10,22 +10,25 @@ export default function Gigs() {
   const [status, setStatus] = useState("all");
 
   useEffect(() => {
-    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/get")
-      .then(res => res.json())
-      .then(data => setGigs(data))
+    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/get", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => setGigs(data))
       .catch(() => setError("Failed to load gigs"));
   }, []);
 
-  const filteredGigs = gigs.filter(gig => {
+  const filteredGigs = gigs.filter((gig) => {
     const matchSearch =
       gig.title.toLowerCase().includes(search.toLowerCase()) ||
       gig.description.toLowerCase().includes(search.toLowerCase());
 
     const matchMin = minPrice === "" || gig.price >= Number(minPrice);
     const matchMax = maxPrice === "" || gig.price <= Number(maxPrice);
-
-    const matchStatus =
-      status === "all" || gig.status === status;
+    const matchStatus = status === "all" || gig.status === status;
 
     return matchSearch && matchMin && matchMax && matchStatus;
   });
@@ -39,29 +42,26 @@ export default function Gigs() {
           type="text"
           placeholder="Search..."
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           className="border p-2"
         />
-
         <input
           type="number"
           placeholder="Min Price"
           value={minPrice}
-          onChange={e => setMinPrice(e.target.value)}
+          onChange={(e) => setMinPrice(e.target.value)}
           className="border p-2"
         />
-
         <input
           type="number"
           placeholder="Max Price"
           value={maxPrice}
-          onChange={e => setMaxPrice(e.target.value)}
+          onChange={(e) => setMaxPrice(e.target.value)}
           className="border p-2"
         />
-
         <select
           value={status}
-          onChange={e => setStatus(e.target.value)}
+          onChange={(e) => setStatus(e.target.value)}
           className="border p-2"
         >
           <option value="all">All</option>
@@ -73,7 +73,7 @@ export default function Gigs() {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {filteredGigs.map(gig => (
+        {filteredGigs.map((gig) => (
           <div key={gig._id} className="border p-4 rounded shadow">
             <h2 className="font-bold text-lg">{gig.title}</h2>
             <p className="text-gray-600">
@@ -83,15 +83,18 @@ export default function Gigs() {
             <p className="text-sm text-gray-500">By {gig.user?.name}</p>
             <p className="text-sm">
               Status:{" "}
-              <span className={gig.status === "assigned" ? "text-green-600" : "text-blue-600"}>
+              <span
+                className={
+                  gig.status === "assigned"
+                    ? "text-green-600"
+                    : "text-blue-600"
+                }
+              >
                 {gig.status}
               </span>
             </p>
 
-            <Link
-              to={`/gig/${gig._id}`}
-              className="inline-block mt-3 text-blue-600"
-            >
+            <Link to={`/gig/${gig._id}`} className="inline-block mt-3 text-blue-600">
               View Details
             </Link>
           </div>

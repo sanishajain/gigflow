@@ -1,55 +1,63 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API = "https://gigflow-1-i4rk.onrender.com";
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [gigs, setGigs] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    const loadData = async () => {
+      try {
+        // Profile (cookie auth)
+        const profileRes = await fetch(`${API}/api/profile`, {
+          credentials: "include",
+        });
 
-    // Load profile
-    fetch("https://gigflow-1-i4rk.onrender.com/api/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.message) setError(data.message);
-        else setUser(data);
-      })
-      .catch(() => setError("Profile error"));
+        if (!profileRes.ok) {
+          navigate("/login");
+          return;
+        }
 
-    // Load my gigs
-    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/my", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(res => res.json())
-      .then(data => setGigs(data))
-      .catch(() => setError("Failed to load gigs"));
+        const profileData = await profileRes.json();
+        setUser(profileData);
+
+        // My gigs
+        const gigsRes = await fetch(`${API}/api/gigs/my`, {
+          credentials: "include",
+        });
+
+        if (!gigsRes.ok) {
+          setGigs([]);
+          return;
+        }
+
+        const gigsData = await gigsRes.json();
+        setGigs(Array.isArray(gigsData) ? gigsData : []);
+      } catch {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, [navigate]);
 
   const deleteGig = async (id) => {
-    const token = localStorage.getItem("token");
-
-    await fetch(`https://gigflow-1-i4rk.onrender.com/api/gigs/${id}`, {
+    await fetch(`${API}/api/gigs/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include",
     });
 
-    setGigs(gigs.filter(g => g._id !== id));
+    setGigs((prev) => prev.filter((g) => g._id !== id));
   };
+
+  if (loading) return <p className="p-6">Loading...</p>;
 
   return (
     <div className="p-6">
@@ -66,37 +74,36 @@ export default function Dashboard() {
 
       {gigs.length === 0 && <p className="mt-2">No gigs yet</p>}
 
-     {gigs.map(gig => (
-  <div key={gig._id} className="border p-3 mt-3 rounded">
-    <h3 className="font-bold">{gig.title}</h3>
-    <p>{gig.description}</p>
-    <p>₹{gig.price}</p>
-    <p>Status: {gig.status}</p>
+      {gigs.map((gig) => (
+        <div key={gig._id} className="border p-3 mt-3 rounded">
+          <h3 className="font-bold">{gig.title}</h3>
+          <p>{gig.description}</p>
+          <p>₹{gig.price}</p>
+          <p>Status: {gig.status}</p>
 
-    {gig.status === "assigned" && (
-      <p className="text-green-600">
-        Assigned to: {gig.assignedTo?.name}
-      </p>
-    )}
+          {gig.status === "assigned" && (
+            <p className="text-green-600">
+              Assigned to: {gig.assignedTo?.name}
+            </p>
+          )}
 
-    <div className="flex gap-3 mt-2">
-      <button
-        onClick={() => deleteGig(gig._id)}
-        className="bg-red-500 text-white px-3 py-1"
-      >
-        Delete
-      </button>
+          <div className="flex gap-3 mt-2">
+            <button
+              onClick={() => deleteGig(gig._id)}
+              className="bg-red-500 text-white px-3 py-1"
+            >
+              Delete
+            </button>
 
-      <button
-        onClick={() => navigate(`/gig/${gig._id}/bids`)}
-        className="bg-black text-white px-3 py-1"
-      >
-        View Bids
-      </button>
-    </div>
-  </div>
-))}
-
+            <button
+              onClick={() => navigate(`/gig/${gig._id}/bids`)}
+              className="bg-black text-white px-3 py-1"
+            >
+              View Bids
+            </button>
+          </div>
+        </div>
+      ))}
 
       {error && <p className="text-red-500 mt-4">{error}</p>}
     </div>

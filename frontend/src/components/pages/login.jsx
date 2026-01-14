@@ -10,12 +10,15 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch("https://gigflow-1-i4rk.onrender.com/api/auth/login", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ email, password }),
-});
-
+      const res = await fetch(
+        "https://gigflow-1-i4rk.onrender.com/api/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",   // cookie auth
+        }
+      );
 
       const data = await res.json();
 
@@ -24,16 +27,12 @@ export default function Login() {
         return;
       }
 
-      // save token and user
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
       alert("Error logging in");
     }
   };
-
 
   return (
     <div className="flex justify-center items-center h-[80vh]">

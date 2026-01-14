@@ -7,21 +7,15 @@ export default function MyBids() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("Not logged in");
-      return;
-    }
-
     fetch("https://gigflow-1-i4rk.onrender.com/api/bids/my", {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then(res => {
-        if (!res.ok) throw new Error("Failed");
+        if (!res.ok) throw new Error();
         return res.json();
       })
       .then(data => setBids(data))
-      .catch(() => setError("Failed to load your bids"));
+      .catch(() => setError("Not logged in or failed to load bids"));
   }, []);
 
   return (
@@ -42,7 +36,6 @@ export default function MyBids() {
               {bid.gig?.title}
             </span>
           </p>
-
           <p><b>Amount:</b> ₹{bid.amount}</p>
           <p><b>Status:</b> {bid.status}</p>
         </div>
