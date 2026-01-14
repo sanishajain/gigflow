@@ -1,21 +1,17 @@
-import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+const API = "https://gigflow-1-i4rk.onrender.com";
 
 export default function ProtectedRoute({ children }) {
-  const [loading, setLoading] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
+  const [ok, setOk] = useState(null);
 
   useEffect(() => {
-    fetch("https://gigflow-1-i4rk.onrender.com/api/profile", {
-      credentials: "include",
-    })
-      .then(res => setAuthorized(res.ok))
-      .catch(() => setAuthorized(false))
-      .finally(() => setLoading(false));
+    fetch(`${API}/api/profile`, { credentials: "include" })
+      .then(res => setOk(res.ok))
+      .catch(() => setOk(false));
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (!authorized) return <Navigate to="/login" />;
-
-  return children;
+  if (ok === null) return <p>Loading...</p>;
+  return ok ? children : <Navigate to="/login" />;
 }
