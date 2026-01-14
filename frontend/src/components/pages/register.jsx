@@ -8,16 +8,15 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "https://gigflow-1-i4rk.onrender.com/api/auth/register",
-        {
+      const response = await
+        fetch("https://gigflow-1-i4rk.onrender.com/api/auth/register", {
           method: "POST",
-          credentials: "include",
-
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
-        }
-      );
+          credentials: "include",   // VERY IMPORTANT
+        });
+
+
 
       const data = await response.json();
       console.log("Response:", data);
