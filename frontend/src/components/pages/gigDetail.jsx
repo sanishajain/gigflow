@@ -7,7 +7,7 @@ export default function GigDetail() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/gigs/get")
+    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/get")
       .then(res => res.json())
       .then(data => {
         const found = data.find(g => g._id === id);

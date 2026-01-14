@@ -23,7 +23,7 @@ export default function CreateGig() {
   };
 
   try {
-    const res = await fetch("http://localhost:5000/api/gigs/create", {
+    const res = await fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/create", {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",

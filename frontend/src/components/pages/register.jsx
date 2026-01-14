@@ -8,34 +8,35 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const response = await fetch(
+        "https://gigflow-1-i4rk.onrender.com/api/auth/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        }
+      );
+
       const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        alert("Registration successful");
-        // navigate to login or dashboard
-      } else {
-        alert(data.message);
+      console.log("Response:", data);
+
+      if (!response.ok) {
+        alert(data.message || "Registration failed");
+        return;
       }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      alert("Registration successful");
     } catch (error) {
-      console.error(error);
-      alert("Error registering");
+      console.error("Network error:", error);
+      alert("Backend not reachable or CORS error");
     }
   };
 
   return (
     <div className="flex justify-center items-center h-[80vh]">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-80"
-      >
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
         <h2 className="text-xl font-bold mb-4 text-center">Register</h2>
 
         <input

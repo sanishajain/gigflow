@@ -20,7 +20,7 @@ export default function PlaceBid() {
     const bidData = { amount: Number(amount), message };
 
     try {
-      const res = await fetch(`http://localhost:5000/api/bids/${gigId}`, {
+      const res = await fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/${gigId}`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

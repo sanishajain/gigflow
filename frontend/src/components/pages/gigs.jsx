@@ -10,7 +10,7 @@ export default function Gigs() {
   const [status, setStatus] = useState("all");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/gigs/get")
+    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/get")
       .then(res => res.json())
       .then(data => setGigs(data))
       .catch(() => setError("Failed to load gigs"));

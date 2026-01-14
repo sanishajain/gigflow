@@ -15,7 +15,7 @@ export default function Dashboard() {
     }
 
     // Load profile
-    fetch("http://localhost:5000/api/profile", {
+    fetch("https://gigflow-1-i4rk.onrender.com/api/profile", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -28,7 +28,7 @@ export default function Dashboard() {
       .catch(() => setError("Profile error"));
 
     // Load my gigs
-    fetch("http://localhost:5000/api/gigs/my", {
+    fetch("https://gigflow-1-i4rk.onrender.com/api/gigs/my", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -41,7 +41,7 @@ export default function Dashboard() {
   const deleteGig = async (id) => {
     const token = localStorage.getItem("token");
 
-    await fetch(`http://localhost:5000/api/gigs/${id}`, {
+    await fetch(`https://gigflow-1-i4rk.onrender.com/api/gigs/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

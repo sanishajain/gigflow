@@ -13,7 +13,7 @@ export default function MyBids() {
       return;
     }
 
-    fetch("http://localhost:5000/api/bids/my", {
+    fetch("https://gigflow-1-i4rk.onrender.com/api/bids/my", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => {

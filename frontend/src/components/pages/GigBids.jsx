@@ -13,7 +13,7 @@ export default function GigBids() {
       return;
     }
 
-    fetch(`http://localhost:5000/api/bids/${id}`, {
+    fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,7 +29,7 @@ export default function GigBids() {
   const acceptBid = async (bidId) => {
     const token = localStorage.getItem("token");
 
-    await fetch(`http://localhost:5000/api/bids/accept/${bidId}`, {
+    await fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/accept/${bidId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
