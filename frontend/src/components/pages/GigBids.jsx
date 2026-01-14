@@ -7,9 +7,10 @@ export default function GigBids() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/${id}`, {
-      credentials: "include",
-    })
+   fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/${id}`, {
+  credentials: "include",
+})
+
       .then((res) => {
         if (!res.ok) throw new Error("Failed");
         return res.json();

@@ -6,14 +6,12 @@ const API = "https://gigflow-1-i4rk.onrender.com";
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [gigs, setGigs] = useState([]);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadData = async () => {
+    const load = async () => {
       try {
-        // Profile (cookie auth)
         const profileRes = await fetch(`${API}/api/profile`, {
           credentials: "include",
         });
@@ -23,29 +21,22 @@ export default function Dashboard() {
           return;
         }
 
-        const profileData = await profileRes.json();
-        setUser(profileData);
+        setUser(await profileRes.json());
 
-        // My gigs
         const gigsRes = await fetch(`${API}/api/gigs/my`, {
           credentials: "include",
         });
 
-        if (!gigsRes.ok) {
-          setGigs([]);
-          return;
-        }
-
         const gigsData = await gigsRes.json();
         setGigs(Array.isArray(gigsData) ? gigsData : []);
       } catch {
-        setError("Something went wrong");
+        navigate("/login");
       } finally {
         setLoading(false);
       }
     };
 
-    loadData();
+    load();
   }, [navigate]);
 
   const deleteGig = async (id) => {
@@ -54,7 +45,7 @@ export default function Dashboard() {
       credentials: "include",
     });
 
-    setGigs((prev) => prev.filter((g) => g._id !== id));
+    setGigs(prev => prev.filter(g => g._id !== id));
   };
 
   if (loading) return <p className="p-6">Loading...</p>;
@@ -72,40 +63,30 @@ export default function Dashboard() {
 
       <h2 className="text-xl font-semibold mt-6">My Gigs</h2>
 
-      {gigs.length === 0 && <p className="mt-2">No gigs yet</p>}
+      {gigs.length === 0 && <p>No gigs yet</p>}
 
-      {gigs.map((gig) => (
+      {gigs.map(gig => (
         <div key={gig._id} className="border p-3 mt-3 rounded">
           <h3 className="font-bold">{gig.title}</h3>
           <p>{gig.description}</p>
           <p>₹{gig.price}</p>
           <p>Status: {gig.status}</p>
 
-          {gig.status === "assigned" && (
-            <p className="text-green-600">
-              Assigned to: {gig.assignedTo?.name}
-            </p>
-          )}
-
           <div className="flex gap-3 mt-2">
             <button
               onClick={() => deleteGig(gig._id)}
-              className="bg-red-500 text-white px-3 py-1"
-            >
+              className="bg-red-500 text-white px-3 py-1">
               Delete
             </button>
 
             <button
               onClick={() => navigate(`/gig/${gig._id}/bids`)}
-              className="bg-black text-white px-3 py-1"
-            >
+              className="bg-black text-white px-3 py-1">
               View Bids
             </button>
           </div>
         </div>
       ))}
-
-      {error && <p className="text-red-500 mt-4">{error}</p>}
     </div>
   );
 }

@@ -10,6 +10,7 @@ export default function MyBids() {
     fetch("https://gigflow-1-i4rk.onrender.com/api/bids/my", {
       credentials: "include",
     })
+
       .then(res => {
         if (!res.ok) throw new Error();
         return res.json();

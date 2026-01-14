@@ -11,15 +11,16 @@ export default function PlaceBid() {
     e.preventDefault();
 
     try {
-      const res = await fetch(
-        `https://gigflow-1-i4rk.onrender.com/api/bids/${gigId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: Number(amount), message }),
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`https://gigflow-1-i4rk.onrender.com/api/bids/${gigId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify(bidData),
+      });
+
 
       const data = await res.json();
 

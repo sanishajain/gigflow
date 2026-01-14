@@ -9,58 +9,37 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch(
-        "https://gigflow-1-i4rk.onrender.com/api/auth/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-          credentials: "include",   // cookie auth
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Invalid login");
-        return;
+    const res = await fetch(
+      "https://gigflow-1-i4rk.onrender.com/api/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
       }
+    );
 
-      navigate("/dashboard");
-    } catch (err) {
-      console.log(err);
-      alert("Error logging in");
+    if (!res.ok) {
+      alert("Invalid login");
+      return;
     }
+
+    localStorage.setItem("loggedIn", "true");
+    navigate("/dashboard");
   };
 
   return (
     <div className="flex justify-center items-center h-[80vh]">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-80"
-      >
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded w-80 shadow">
         <h2 className="text-xl font-bold mb-4 text-center">Login</h2>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border p-2 mb-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input className="w-full border p-2 mb-3" placeholder="Email"
+          value={email} onChange={e => setEmail(e.target.value)} />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border p-2 mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <input type="password" className="w-full border p-2 mb-3" placeholder="Password"
+          value={password} onChange={e => setPassword(e.target.value)} />
 
-        <button className="bg-black text-white w-full py-2">
-          Login
-        </button>
+        <button className="bg-black text-white w-full py-2">Login</button>
       </form>
     </div>
   );
